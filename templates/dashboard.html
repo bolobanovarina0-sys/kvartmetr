@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Кабинет — {{ brand.name }}{% endblock %}
+{% block content %}
+<main class="grid">
+  <div class="col">
+    <!-- 1. Выбор объекта -->
+    <section class="card">
+      <h2>1. Выбор объекта</h2>
+      <label for="apt-select">Квартира</label>
+      <div class="row">
+        <select id="apt-select"></select>
+        <button class="btn btn-ghost" id="add-apt" type="button">Добавить</button>
+      </div>
+      <div class="summary">
+        <div>
+          <strong id="apt-name">—</strong>
+          <p class="muted">Прогноз расходов (месяц): <b id="forecast">—</b></p>
+          <p class="muted">Уже потрачено: <b id="spent">—</b></p>
+        </div>
+        <a class="btn btn-primary" id="download" href="#">Скачать детализацию</a>
+      </div>
+      <p class="energy">Класс энергоэффективности: <b id="eclass">—</b> <span id="elabel" class="muted"></span></p>
+    </section>
+
+    <!-- 2. Аналитика расходов -->
+    <section class="card">
+      <h2>2. Аналитика расходов</h2>
+      <h3>Из чего складываются затраты за месяц</h3>
+      <div class="chart chart-donut"><canvas id="donut"></canvas></div>
+      <h3>Накопленные расходы за месяц, ₽</h3>
+      <div class="chart chart-line"><canvas id="line"></canvas></div>
+      <p class="hint" id="hint">—</p>
+      <p class="tariffs">Тарифы: ХВС 45 ₽/м³ · ГВС 180 ₽/м³ · свет 5,5 ₽/кВт·ч · отопление 2 450 ₽/Гкал</p>
+    </section>
+  </div>
+
+  <!-- 3. Интерактивный план -->
+  <section class="card plan-card">
+    <div class="plan-head">
+      <h2>3. Интерактивный план</h2>
+      <label class="btn btn-ghost" for="upload">Загрузить план квартиры</label>
+      <input id="upload" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" hidden>
+    </div>
+    <div class="toolbar" id="toolbar"><span class="muted">Перетащите датчик на план:</span></div>
+    <div class="plan" id="plan">
+      <img id="plan-img" alt="План квартиры" draggable="false">
+      <div class="pins" id="pins"></div>
+      <aside id="sensor-card" class="sensor-card" hidden>
+        <header>
+          <span id="sc-icon" class="sc-icon"></span>
+          <div><h3 id="sc-name"></h3><p id="sc-time" class="muted"></p></div>
+          <button class="icon-btn" id="sc-close" type="button" aria-label="Закрыть">×</button>
+        </header>
+        <div class="sc-main"><span class="sc-value" id="sc-value"></span><span class="badge" id="sc-status"></span></div>
+        <div class="sc-chart" id="sc-chart-box"><canvas id="sc-spark"></canvas></div>
+        <p class="muted" id="sc-stats"></p>
+        <div class="sc-actions">
+          <button class="btn btn-ghost" id="sc-alarm" type="button" hidden>Проверить тревогу</button>
+          <button class="btn btn-ghost btn-danger" id="sc-remove" type="button">Убрать с плана</button>
+        </div>
+      </aside>
+    </div>
+    <p class="muted small">Метку можно перетащить на новое место. Данные обновляются каждые 6 секунд.</p>
+  </section>
+</main>
+
+<dialog id="apt-dialog">
+  <form id="apt-form" method="dialog">
+    <h2>Новая квартира</h2>
+    <label for="f-name">Название</label>
+    <input id="f-name" name="name" maxlength="60" placeholder="Например, Квартира на Мира" required>
+    <div class="row">
+      <div><label for="f-area">Площадь, м²</label><input id="f-area" name="area" type="number" min="10" max="500" step="0.1" value="54" required></div>
+      <div><label for="f-res">Жильцов</label><input id="f-res" name="residents" type="number" min="1" max="10" value="2" required></div>
+    </div>
+    <div class="row end">
+      <button class="btn btn-ghost" type="button" id="f-cancel">Отмена</button>
+      <button class="btn btn-primary" type="submit">Добавить</button>
+    </div>
+  </form>
+</dialog>
+<div id="toast" class="toast" hidden></div>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}
