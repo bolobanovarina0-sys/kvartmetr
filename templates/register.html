@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Регистрация — {{ brand.name }}{% endblock %}
+{% block content %}
+<main class="auth">
+  <form class="card auth-card" method="post">
+    <h2>Создать аккаунт</h2>
+    <p class="muted">Сразу добавим демо-квартиру с датчиками, чтобы было на что посмотреть.</p>
+    {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+    <label for="username">Логин</label>
+    <input id="username" name="username" autocomplete="username" minlength="3" maxlength="32" required autofocus>
+    <label for="password">Пароль</label>
+    <input id="password" name="password" type="password" autocomplete="new-password" minlength="6" required>
+    <label for="password2">Повторите пароль</label>
+    <input id="password2" name="password2" type="password" autocomplete="new-password" minlength="6" required>
+    <button class="btn btn-primary" type="submit">Создать аккаунт</button>
+    <p class="muted center">Уже есть аккаунт? <a class="link" href="{{ url_for('login') }}">Войти</a></p>
+  </form>
+</main>
+{% endblock %}
