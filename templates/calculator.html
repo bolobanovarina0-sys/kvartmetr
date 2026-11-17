@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Калькулятор установки — {{ brand.name }}{% endblock %}
+{% block content %}
+<main class="calc">
+  <!-- Редактор планировки -->
+  <section class="card editor">
+    <h2>Конструктор планировки</h2>
+    <div class="ed-alert" id="ed-alert" role="alert" hidden></div>
+    <p class="muted ed-lead">Выберите готовую планировку или нарисуйте свою, затем расставьте датчики. Стоимость считается справа.</p>
+
+    <div class="ed-group">
+      <span class="lbl">Шаблоны</span>
+      <button class="btn btn-ghost btn-sm" type="button" data-preset="studio">Студия</button>
+      <button class="btn btn-ghost btn-sm" type="button" data-preset="one">1-комнатная</button>
+      <button class="btn btn-ghost btn-sm" type="button" data-preset="two">2-комнатная</button>
+      <button class="btn btn-ghost btn-sm" type="button" data-preset="three">3-комнатная</button>
+      <button class="btn btn-ghost btn-sm btn-danger" type="button" id="clear">Очистить холст</button>
+    </div>
+
+    <div class="ed-group">
+      <span class="lbl">Комнаты</span>
+      <input id="room-name" list="room-names" placeholder="Название комнаты" maxlength="30" aria-label="Название комнаты">
+      <datalist id="room-names"><option value="Кухня"><option value="Спальня"><option value="Гостиная"><option value="Санузел"><option value="Прихожая"><option value="Детская"><option value="Балкон"></datalist>
+      <button class="btn btn-ghost btn-sm" type="button" id="add-room">Добавить комнату</button>
+      <button class="btn btn-ghost btn-sm" type="button" id="draw">Нарисовать мышью</button>
+      <label class="scale-lbl" for="scale">Масштаб, px в 1 м</label>
+      <input id="scale" type="number" min="0" step="1" value="50" aria-label="Масштаб">
+    </div>
+
+    <div class="ed-group">
+      <span class="lbl">Датчики</span>
+      <div class="tool" draggable="true" data-type="hub" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg><span>Хаб</span></div>
+      <div class="tool" draggable="true" data-type="temperature" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V5a2 2 0 1 0-4 0v9.8a4 4 0 1 0 4 0z"/></svg><span>Температура</span></div>
+      <div class="tool" draggable="true" data-type="leak" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/><path d="M9 14a3 3 0 0 0 3 3"/></svg><span>Протечка</span></div>
+      <div class="tool" draggable="true" data-type="smoke" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 8.5 3.75 3.75 0 0 1 17.5 17z"/><path d="M8 21h8"/></svg><span>Дым</span></div>
+      <div class="tool" draggable="true" data-type="electricity" tabindex="0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg><span>Электричество</span></div>
+    </div>
+
+    <div class="ed-group">
+      <span class="lbl">Файлы</span>
+      <label class="btn btn-ghost btn-sm" for="bg-file">Загрузить фон</label>
+      <input id="bg-file" type="file" accept="image/png,image/jpeg" hidden>
+      <button class="btn btn-ghost btn-sm" type="button" id="bg-clear">Убрать фон</button>
+      <button class="btn btn-ghost btn-sm" type="button" id="save">Скачать шаблон</button>
+      <label class="btn btn-ghost btn-sm" for="load">Загрузить шаблон</label>
+      <input id="load" type="file" accept="application/json,.json" hidden>
+    </div>
+
+    <div class="ed-group">
+      <span class="lbl">Выбранное</span>
+      <button class="btn btn-ghost btn-sm" type="button" id="rotate" disabled>Повернуть на 90°</button>
+      <button class="btn btn-ghost btn-sm btn-danger" type="button" id="delete" disabled>Удалить</button>
+    </div>
+
+    <p class="ed-status" id="ed-status" role="status" aria-live="polite"></p>
+    <div class="stage-wrap" id="stage-wrap"><div id="stage"></div></div>
+    <div class="legend" aria-label="Условные обозначения">
+      <span class="legend-title">Условные обозначения:</span>
+      <span class="legend-item"><i class="lg-wall"></i>Несущая стена</span>
+      <span class="legend-item"><i class="lg-part"></i>Перегородка</span>
+      <span class="legend-item"><i class="lg-door">⌒</i>Дверь</span>
+      <span class="legend-item"><i class="lg-win"></i>Окно</span>
+    </div>
+    <p class="muted small">Перетащите датчик из панели на план или просто нажмите на него. Файл шаблона (.json) или картинку плана можно перетащить прямо на холст. Рядом со стеной датчик «прилипает» к ней; чтобы поставить его свободно, отпустите кнопку мыши с зажатым Alt. Стены, двери, окна и мебель можно двигать и удалять (Delete); двери, окна и мебель — поворачивать. Комнаты, нарисованные мышью, тянутся за рамку. Площадь считается по масштабу: сколько пикселей на плане равны 1 метру.</p>
+  </section>
+
+  <!-- Калькулятор -->
+  <aside class="card calc-side">
+    <h2>Состав и стоимость</h2>
+    <ul class="price-list" id="lines"></ul>
+    <div class="calc-meta">
+      <p>Датчиков на плане: <b id="sensor-count">0</b></p>
+      <p id="area-row" hidden>Площадь комнат: <b id="area">0</b> м²</p>
+    </div>
+    <p class="discount-hint" id="discount-hint"></p>
+    <div class="total-row"><span>Итого</span><strong id="total">—</strong></div>
+    <button class="btn btn-primary btn-block" type="button" id="order">Оформить заявку</button>
+    <p class="muted small">Хаб входит в комплект всегда. Скидка 10% действует на оборудование, если датчиков больше 10. Монтаж — отдельно. Расчёт ориентировочный и не является офертой.</p>
+  </aside>
+</main>
+{% endblock %}
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/konva/9.3.6/konva.min.js"></script>
+<script>window.Konva || document.write('<script src="https://cdn.jsdelivr.net/npm/konva@9.3.6/konva.min.js"><\/script>');</script>
+<script src="{{ url_for('static', filename='js/calculator.js') }}"></script>
+{% endblock %}
