@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}{{ brand.title }}{% endblock %}
+{% block content %}
+<main class="landing">
+
+  <!-- Hero -->
+  <section class="container hero">
+    <div>
+      <h1>Ваша квартира под контролем</h1>
+      <p class="lead">Датчики протечки, дыма и климата, учёт электричества и понятная аналитика расходов — в одном приложении. Узнавайте о проблеме раньше, чем она станет аварией.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Попробовать демо</a>
+        <a class="btn btn-ghost btn-lg" href="{{ url_for('calculator') }}">Рассчитать стоимость</a>
+      </div>
+    </div>
+    <div class="hero-art">
+      <img src="{{ url_for('static', filename='img/demo_plan.svg') }}" alt="План квартиры с датчиками">
+      <div class="pin" data-kind="analog" data-status="ok" style="left:24%;top:58%"><span class="pin-body"><span class="pin-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V5a2 2 0 1 0-4 0v9.8a4 4 0 1 0 4 0z"/></svg></span>Температура: 22,4 °C</span></div>
+      <div class="pin" data-kind="analog" data-status="ok" style="left:15%;top:29%"><span class="pin-body"><span class="pin-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>Нагрузка: 0,82 кВт</span></div>
+      <div class="pin" data-kind="binary" data-status="ok" style="left:82%;top:33%"><span class="pin-body"><span class="pin-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 8.5 3.75 3.75 0 0 1 17.5 17z"/><path d="M8 21h8"/></svg></span>Дым: ОК</span></div>
+      <div class="pin" data-kind="binary" data-status="ok" style="left:82%;top:81%"><span class="pin-body"><span class="pin-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/><path d="M9 14a3 3 0 0 0 3 3"/></svg></span>Протечки: Норма</span></div>
+    </div>
+  </section>
+
+  <!-- Миссия -->
+  <section class="band">
+    <div class="container section">
+      <h2 class="title">Наша миссия</h2>
+      <div class="mission">
+        <p class="lead">Мы хотим, чтобы дом заботился о людях, а не наоборот. Большинство бытовых бед — затопленные соседи, пожар от забытого прибора, неожиданные счета — начинаются с мелочи, которую никто вовремя не заметил.</p>
+        <ul class="points">
+          <li><b>Безопасность.</b> Датчики протечки и дыма реагируют сразу и присылают уведомление, пока ущерб не вырос.</li>
+          <li><b>Экономия.</b> Вы видите, на что уходят вода, свет и тепло, и получаете прогноз расходов на месяц.</li>
+          <li><b>Спокойствие.</b> Все показания и план квартиры — в одном кабинете, даже когда вы в отъезде.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Каталог датчиков -->
+  <section class="container section">
+    <h2 class="title">Каталог датчиков</h2>
+    <div class="tiles">
+      <article class="tile">
+        <span class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/><path d="M9 14a3 3 0 0 0 3 3"/></svg></span>
+        <h3>Датчик протечки</h3>
+        <p>Срабатывает на первых каплях у стиральной машины, раковины или стояка. Успеете перекрыть воду до ущерба соседям.</p>
+        <span class="price">1 200 ₽</span>
+      </article>
+      <article class="tile">
+        <span class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 8.5 3.75 3.75 0 0 1 17.5 17z"/><path d="M8 21h8"/></svg></span>
+        <h3>Датчик дыма</h3>
+        <p>Громкий сигнал в квартире и уведомление на телефон, если вас нет дома. Даёт время вызвать помощь.</p>
+        <span class="price">1 800 ₽</span>
+      </article>
+      <article class="tile">
+        <span class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.8V5a2 2 0 1 0-4 0v9.8a4 4 0 1 0 4 0z"/></svg></span>
+        <h3>Климат</h3>
+        <p>Температура и влажность по комнатам. Помогает избежать сырости и плесени и не перегревать квартиру.</p>
+        <span class="price">1 500 ₽</span>
+      </article>
+      <article class="tile">
+        <span class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>
+        <h3>Электричество</h3>
+        <p>Показывает нагрузку в реальном времени и расход за месяц. Сразу видно, какие приборы «съедают» больше всего.</p>
+        <span class="price">1 500 ₽</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- Как это работает -->
+  <section class="band">
+    <div class="container section">
+      <h2 class="title">Как это работает</h2>
+      <ol class="steps">
+        <li><span class="step-n">1</span><h3>Загрузите план</h3><p>Нарисуйте планировку в конструкторе или загрузите свою картинку.</p></li>
+        <li><span class="step-n">2</span><h3>Рассчитайте стоимость</h3><p>Расставьте датчики — <a class="link" href="{{ url_for('calculator') }}">калькулятор</a> сразу покажет цену комплекта и монтажа.</p></li>
+        <li><span class="step-n">3</span><h3>Установите</h3><p>Монтаж занимает несколько часов, перепланировка и ремонт не нужны.</p></li>
+        <li><span class="step-n">4</span><h3>Экономьте</h3><p>Следите за показаниями и расходами в кабинете и получайте прогноз на месяц.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Контакты -->
+  <section class="container section" id="contacts">
+    <h2 class="title">Контакты</h2>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <p class="lead">Оставьте заявку, и мы подскажем, какой комплект подойдёт именно вашей квартире.</p>
+        <p><b>Телефон:</b> <a class="link" href="tel:+78000000000">+7 (800) 000-00-00</a></p>
+        <p><b>Email:</b> <a class="link" href="mailto:hello@kvartmetr.example">hello@kvartmetr.example</a></p>
+        <p class="muted">Отвечаем ежедневно с 9:00 до 20:00.</p>
+      </div>
+      <form class="card" id="contact-form">
+        <label for="c-name">Имя</label>
+        <input id="c-name" name="name" autocomplete="name" required>
+        <label for="c-phone">Телефон</label>
+        <input id="c-phone" name="phone" type="tel" autocomplete="tel" placeholder="+7" required>
+        <label for="c-email">Email</label>
+        <input id="c-email" name="email" type="email" autocomplete="email" required>
+        <button class="btn btn-primary btn-block" type="submit">Отправить заявку</button>
+      </form>
+    </div>
+  </section>
+</main>
+{% endblock %}
+{% block scripts %}
+<script>
+  // Форма-заглушка: показываем подтверждение без отправки на сервер
+  document.getElementById("contact-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = e.target.name.value.trim();
+    alert(`Спасибо, ${name}! Заявка принята, мы свяжемся с вами в ближайшее время.`);
+    e.target.reset();
+  });
+</script>
+{% endblock %}
