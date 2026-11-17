@@ -1,0 +1,80 @@
+{% macro logo() %}<span class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/><path d="M10 20v-5h4v5"/></svg></span>{% endmacro %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ brand.title }}{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{{ url_for('index') }}">
+      {{ logo() }}
+      <span>
+        <strong>{{ brand.name }}</strong>
+        <small>{{ brand.tagline }}</small>
+      </span>
+    </a>
+    <nav class="nav" aria-label="Основное меню">
+      {% if session.get('username') %}
+        <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.endpoint == 'dashboard' }}">Кабинет</a>
+        <a href="{{ url_for('calculator') }}" class="{{ 'active' if request.endpoint == 'calculator' }}">Калькулятор</a>
+        {% if request.endpoint == 'dashboard' %}
+        <span class="live" id="live" data-state="on"><i></i><span>Система активна</span></span>
+        {% endif %}
+        <span class="user">{{ session['username'] }}</span>
+        <a class="btn btn-ghost btn-sm" href="{{ url_for('logout') }}">Выйти</a>
+      {% else %}
+        <a href="{{ url_for('calculator') }}" class="{{ 'active' if request.endpoint == 'calculator' }}">Калькулятор</a>
+        <a href="{{ url_for('login') }}" class="{{ 'active' if request.endpoint == 'login' }}">Войти</a>
+        <a class="btn btn-primary btn-sm" href="{{ url_for('register') }}">Регистрация</a>
+      {% endif %}
+    </nav>
+  </header>
+
+  {% block content %}{% endblock %}
+
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="f-col f-brand">
+        <a class="brand" href="{{ url_for('index') }}">{{ logo() }}<strong>{{ brand.name }}</strong></a>
+        <p>{{ brand.tagline }}</p>
+        <p class="copy">© 2024 КвартМетр (прототип). Все права защищены.</p>
+      </div>
+      <div class="f-col">
+        <h4>Продукт</h4>
+        <ul>
+          <li><a href="{{ url_for('index') }}">Главная</a></li>
+          <li><a href="{{ url_for('calculator') }}">Калькулятор</a></li>
+          <li><a href="{{ url_for('dashboard') }}">Личный кабинет</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h4>Документация</h4>
+        <ul>
+          <li><a href="{{ url_for('terms') }}">Пользовательское соглашение</a></li>
+          <li><a href="{{ url_for('privacy') }}">Политика конфиденциальности</a></li>
+          <li><a href="#">Инструкция по установке</a></li>
+        </ul>
+      </div>
+      <div class="f-col">
+        <h4>Контакты</h4>
+        <ul>
+          <li><a href="tel:+70000000000">+7 (000) 000-00-00</a> <span class="demo-tag">(демо-данные)</span></li>
+          <li><a href="mailto:demo@kvartmetr.example">demo@kvartmetr.example</a> <span class="demo-tag">(демо-данные)</span></li>
+        </ul>
+        <div class="social">
+          <a href="#" aria-label="Telegram">Telegram</a>
+          <a href="#" aria-label="ВКонтакте">VK</a>
+          <a href="#" aria-label="YouTube">YouTube</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  {% block scripts %}{% endblock %}
+</body>
+</html>
