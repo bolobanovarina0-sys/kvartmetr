@@ -187,13 +187,20 @@ def add_reading(sid, stype, prev=None, value=None):
     return value
 
 
+def rssi_of(sid, ts):
+    """Имитация уровня радиосигнала LoRa в dBm. У каждого датчика своя «дальность» (от −78 до −102),
+    плюс небольшой шум, который меняется с каждым новым замером."""
+    base = -78 - (sid * 7) % 25
+    return int(round(base + random.Random(f"{sid}:{ts}").gauss(0, 1.5)))
+
+
 def sensor_dict(sid):
     r = db().execute("""SELECT s.id, s.type, s.x_coord, s.y_coord,
         (SELECT value FROM readings WHERE sensor_id=s.id ORDER BY id DESC LIMIT 1) AS value,
         (SELECT timestamp FROM readings WHERE sensor_id=s.id ORDER BY id DESC LIMIT 1) AS ts
         FROM sensors s WHERE s.id=?""", (sid,)).fetchone()
     return {"id": r["id"], "type": r["type"], "x": r["x_coord"], "y": r["y_coord"],
-            "value": r["value"], "ts": r["ts"], "unit": UNITS[r["type"]],
+            "value": r["value"], "ts": r["ts"], "unit": UNITS[r["type"]], "rssi": rssi_of(r["id"], r["ts"]),
             "status": status_of(r["type"], r["value"])}
 
 
