@@ -120,6 +120,14 @@
     });
     layer.querySelectorAll(".pin").forEach((el) => { if (!seen.has(el.dataset.id)) el.remove(); });
   }
+  // Уровень радиосигнала LoRa: чем ближе к 0, тем лучше (выше −90 dBm — хороший, ниже −105 — слабый)
+  const loraQuality = (r) => (r >= -90 ? ["хороший", "ok"] : r >= -105 ? ["средний", "warn"] : ["слабый", "alert"]);
+  function renderLora() {
+    const vals = state.sensors.map((s) => s.rssi).filter(Number.isFinite);
+    if (!vals.length) { $("#lora").textContent = "—"; return; }
+    const avg = Math.round(vals.reduce((a, b) => a + b, 0) / vals.length);
+    $("#lora").textContent = `${num(avg)} dBm (${loraQuality(avg)[0]})`;
+  }
   function settle(id) {
     const el = $(`#pins [data-id="${id}"]`);
     if (!el) return;
@@ -190,6 +198,11 @@
     $("#sc-value").textContent = t.big(s.value);
     const badge = $("#sc-status");
     badge.textContent = STATUS[s.status]; badge.dataset.s = s.status;
+    const lora = $("#sc-lora");
+    if (Number.isFinite(s.rssi)) {
+      const [label, q] = loraQuality(s.rssi);
+      lora.innerHTML = `Связь LoRa: <b data-q="${q}">${num(s.rssi)} dBm</b> · ${label} сигнал`;
+    } else lora.textContent = "";
     $("#sc-alarm").hidden = !t.binary;
     try {
       const h = await api(`/api/sensors/${s.id}/history`);
@@ -221,7 +234,7 @@
       const [sensors, an] = await Promise.all([api(`/api/apartments/${id}/sensors`), api(`/api/apartments/${id}/analytics`)]);
       if (id !== state.aptId) return;
       state.sensors = sensors;
-      renderPins(); renderAnalytics(an);
+      renderPins(); renderAnalytics(an); renderLora();
       if (state.openId) refreshCard();
       setLive(true);
     } catch (_) { setLive(false); }
