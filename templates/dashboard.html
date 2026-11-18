@@ -16,6 +16,7 @@
           <strong id="apt-name">—</strong>
           <p class="muted">Прогноз расходов (месяц): <b id="forecast">—</b></p>
           <p class="muted">Уже потрачено: <b id="spent">—</b></p>
+          <p class="muted">Связь LoRa (в среднем): <b id="lora">—</b></p>
         </div>
         <a class="btn btn-primary" id="download" href="#">Скачать детализацию</a>
       </div>
@@ -52,6 +53,7 @@
           <button class="icon-btn" id="sc-close" type="button" aria-label="Закрыть">×</button>
         </header>
         <div class="sc-main"><span class="sc-value" id="sc-value"></span><span class="badge" id="sc-status"></span></div>
+        <p class="sc-lora" id="sc-lora"></p>
         <div class="sc-chart" id="sc-chart-box"><canvas id="sc-spark"></canvas></div>
         <p class="muted" id="sc-stats"></p>
         <div class="sc-actions">
